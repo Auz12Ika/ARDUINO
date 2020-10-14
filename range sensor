@@ -1,0 +1,47 @@
+#include <LiquidCrystal_I2C.h>
+#include <Wire.h>
+LiquidCrystal_I2C lcd(0x20,16,2);
+const int pingPin= 7;
+const int echoPin= 8;
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  lcd.begin(16,2);
+  lcd.backlight();
+  lcd.setCursor(0,0);
+  lcd.print("jarak: ");
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  long duration, inches, cm;
+  pinMode (pingPin, OUTPUT);
+  digitalWrite(pingPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(pingPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(pingPin, LOW);
+
+  pinMode(echoPin, HIGH);
+  duration=pulseIn(echoPin, HIGH);
+  cm = (duration/29.155)/2; //kecepatan suara= 343m/s, jadi memerlukan 29.155 microseconds per cm, lalu dibagi dua karena menunggu signyal datang lagi 
+  inches = cm*0.393701; //cm = 0.393701 in
+
+  Serial.print(inches);
+  Serial.print("in, ");
+  Serial.print(cm);
+  Serial.print("cm");
+  Serial.println();
+  lcd.setCursor(0,1);
+  lcd.print(inches);
+  lcd.print("in, ");
+  lcd.print(cm);
+  lcd.print("cm");
+  lcd.println();
+
+  
+delay(100);
+lcd.setCursor(0,1);
+lcd.print("");
+}
